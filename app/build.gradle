@@ -1,0 +1,22 @@
+plugins {
+    id 'com.android.application'
+}
+apply from: "../common_module_build_kotlin.gradle"
+
+android {
+
+    defaultConfig {
+        applicationId "com.example.test"
+
+        multiDexEnabled true
+
+        versionCode VERSION_CODE as int
+        versionName VERSION_NAME
+
+    }
+
+}
+
+dependencies {
+
+}

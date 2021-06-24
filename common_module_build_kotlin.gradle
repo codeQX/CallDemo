@@ -1,0 +1,123 @@
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
+}
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+
+    //除了使用的library module要加之外，主module(也即是application module)一定要加。
+    buildFeatures{
+        dataBinding true
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+
+        testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+        consumerProguardFiles 'consumer-rules.pro'
+
+    }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "ResourceType"
+        abortOnError false
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    //-------------------------------------------AndroidX-------------------------------------------
+    api rootProject.ext.dependencies["kotlin"]
+    api rootProject.ext.dependencies["core_ktx"]
+
+    api rootProject.ext.dependencies["multidex"]
+    api rootProject.ext.dependencies["activity"]
+    api rootProject.ext.dependencies["appcompat"]
+    api rootProject.ext.dependencies["cardview"]
+    api rootProject.ext.dependencies["annotation"]
+    api rootProject.ext.dependencies["recyclerview"]
+    api rootProject.ext.dependencies["constraint_layout"]
+    api rootProject.ext.dependencies["lifecycle_java8"]
+    api rootProject.ext.dependencies["lifecycle_extensions"]
+    api rootProject.ext.dependencies["material"]
+    api rootProject.ext.dependencies["constraint_layout"]
+    api rootProject.ext.dependencies["legacy_support_v4"]
+    api rootProject.ext.dependencies["easypermissions"]
+
+
+    api rootProject.ext.dependencies["room_runtime"]
+    // For Kotlin use kapt instead of annotationProcessor
+    annotationProcessor rootProject.ext.dependencies["room_compiler"]
+    // optional - Kotlin Extensions and Coroutines support for Room
+    api rootProject.ext.dependencies["room_ktx"]
+    // optional - RxJava support for Room
+    api rootProject.ext.dependencies["room_rxjava2"]
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    api rootProject.ext.dependencies["room_guava"]
+//    testApi rootProject.ext.dependencies["room_testing"]
+
+    //-------------------------------------------retrofit-------------------------------------------
+    api(rootProject.ext.dependencies["retrofit"]) {
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+    }
+    api(rootProject.ext.dependencies["retrofit_adapter_rxjava2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'okhttp'
+        exclude module: 'retrofit'
+        exclude module: 'okio'
+    }
+    api(rootProject.ext.dependencies["retrofit_converter_gson"]) {
+        exclude module: 'gson'
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+        exclude module: 'retrofit'
+    }
+//    api(rootProject.ext.dependencies["retrofit_converter_scalars"]) {
+//        exclude module: 'gson'
+//        exclude module: 'okhttp'
+//        exclude module: 'okio'
+//        exclude module: 'retrofit'
+//    }
+    //-------------------------------------------okhttp3--------------------------------------------
+    api rootProject.ext.dependencies["okhttp3"]
+    //-------------------------------------------timber---------------------------------------------
+    api rootProject.ext.dependencies["timber"]
+    //-------------------------------------------gson-----------------------------------------------
+    api rootProject.ext.dependencies["gson"]
+    api rootProject.ext.dependencies["fastjson"]
+    //-------------------------------------------utils----------------------------------------------
+    api(rootProject.ext.dependencies["utilcode"]) {
+        exclude group: "com.blankj"
+    }
+    //-------------------------------------------二维码扫描------------------------------------------
+    api rootProject.ext.dependencies["zbar"]
+    api rootProject.ext.dependencies["zxing"]
+    api rootProject.ext.dependencies["swipe_recyclerview"]
+    //-------------------------------------------弹窗库----------------------------------------------
+    api rootProject.ext.dependencies["base_popup"]
+
+}
