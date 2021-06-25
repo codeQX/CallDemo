@@ -26,8 +26,7 @@ import java.util.*
  * =================================================================================================
  */
 class MyRecordService : Service() {
-    //        val RECORD_TIME = 4 * 60 * 60 * 1000L
-    val RECORD_TIME = 10 * 1000L
+    val RECORD_TIME = 60 * 60 * 1000L
     val MSG_STOP = 1
     val MSG_CHECK = 2
 
@@ -38,9 +37,21 @@ class MyRecordService : Service() {
     override fun onCreate() {
         super.onCreate()
         Timber.d("创建录音服务")
+
+        //8.0以上系统需要创建前台服务
+        newForegroundService()
+
+        //初始化录音
+        initMediaRecorder()
+
+        //发送延迟消息销毁服务
+        handler.sendEmptyMessageDelayed(MSG_STOP, RECORD_TIME)
+    }
+
+    private fun newForegroundService() {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val channelId ="channel_id_record"
+        val channelId = "channel_id_record"
         val channel = NotificationChannel(channelId, "前台通知", NotificationManager.IMPORTANCE_HIGH)
         manager.createNotificationChannel(channel)
 
@@ -54,11 +65,6 @@ class MyRecordService : Service() {
             .setContentIntent(pi)
             .build()
         startForeground(1, notification)
-
-
-        initMediaRecorder()
-
-        handler.sendEmptyMessageDelayed(MSG_STOP, RECORD_TIME)
     }
 
 
