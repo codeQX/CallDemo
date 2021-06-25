@@ -1,11 +1,16 @@
 package com.example.test
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.media.MediaRecorder
 import android.os.*
 import android.text.format.DateFormat
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.PathUtils
 import timber.log.Timber
@@ -21,8 +26,8 @@ import java.util.*
  * =================================================================================================
  */
 class MyRecordService : Service() {
-        val RECORD_TIME = 4 * 60 * 60 * 1000L
-//    val RECORD_TIME = 40 * 1000L
+    //        val RECORD_TIME = 4 * 60 * 60 * 1000L
+    val RECORD_TIME = 10 * 1000L
     val MSG_STOP = 1
     val MSG_CHECK = 2
 
@@ -30,10 +35,27 @@ class MyRecordService : Service() {
     lateinit var mediaRecorder: MediaRecorder
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
         Timber.d("创建录音服务")
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val channelId ="channel_id_record"
+        val channel = NotificationChannel(channelId, "前台通知", NotificationManager.IMPORTANCE_HIGH)
+        manager.createNotificationChannel(channel)
+
+        val intent = Intent(this, MyDialerActivity::class.java)
+        val pi = PendingIntent.getActivity(this, 0, intent, 0)
+        val notification = NotificationCompat.Builder(this, "r service")
+            .setChannelId(channelId)//要给通知设置channel id
+            .setContentTitle("title")
+            .setContentText("content")
+            .setSmallIcon(R.drawable.calendar_icon)
+            .setContentIntent(pi)
+            .build()
+        startForeground(1, notification)
+
+
         initMediaRecorder()
 
         handler.sendEmptyMessageDelayed(MSG_STOP, RECORD_TIME)
@@ -55,11 +77,11 @@ class MyRecordService : Service() {
         super.onDestroy()
         Timber.d("销毁录音服务")
 
+
     }
 
     var file: File? = null
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun initMediaRecorder() {
         mediaRecorder = MediaRecorder()
 
@@ -96,10 +118,15 @@ class MyRecordService : Service() {
                     stopRecord()
 
                     stopSelf()
+
+                    postDelayed({
+                        //启动一个新的当前服务
+                        startService(Intent(this@MyRecordService, MyRecordService::class.java))
+                    }, 1000)
                 }
                 MSG_CHECK -> {
                     Timber.d("file size:${FileUtils.getFileSize(file)}")
-                    sendEmptyMessageDelayed(MSG_CHECK, 10 * 1000)
+                    sendEmptyMessageDelayed(MSG_CHECK, 5 * 1000)
                 }
             }
         }
