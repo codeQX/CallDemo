@@ -6,7 +6,7 @@ import android.telecom.ConnectionRequest
 import android.telecom.ConnectionService
 import android.telecom.PhoneAccountHandle
 import androidx.annotation.RequiresApi
-import com.blankj.utilcode.util.LogUtils
+import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.M)
 class MyConnectionService : ConnectionService(){
@@ -16,7 +16,7 @@ class MyConnectionService : ConnectionService(){
         connectionManagerPhoneAccount: PhoneAccountHandle?,
         request: ConnectionRequest?
     ): Connection {
-        LogUtils.d("onCreateIncomingConnection")
+        Timber.d("onCreateIncomingConnection")
         return super.onCreateIncomingConnection(connectionManagerPhoneAccount, request)
     }
 
@@ -24,7 +24,7 @@ class MyConnectionService : ConnectionService(){
         connectionManagerPhoneAccount: PhoneAccountHandle?,
         request: ConnectionRequest?
     ) {
-        LogUtils.d("onCreateIncomingConnectionFailed")
+        Timber.d("onCreateIncomingConnectionFailed")
         super.onCreateIncomingConnectionFailed(connectionManagerPhoneAccount, request)
     }
 
@@ -32,7 +32,7 @@ class MyConnectionService : ConnectionService(){
         fromPhoneAccountHandle: PhoneAccountHandle?,
         request: ConnectionRequest?
     ): Connection {
-        LogUtils.d("onCreateIncomingHandoverConnection")
+        Timber.d("onCreateIncomingHandoverConnection")
         return super.onCreateIncomingHandoverConnection(fromPhoneAccountHandle, request)
     }
 
@@ -41,7 +41,7 @@ class MyConnectionService : ConnectionService(){
         connectionManagerPhoneAccount: PhoneAccountHandle?,
         request: ConnectionRequest?
     ): Connection {
-        LogUtils.d("onCreateOutgoingConnection")
+        Timber.d("onCreateOutgoingConnection")
         return super.onCreateOutgoingConnection(connectionManagerPhoneAccount, request)
     }
 
@@ -49,7 +49,7 @@ class MyConnectionService : ConnectionService(){
         connectionManagerPhoneAccount: PhoneAccountHandle?,
         request: ConnectionRequest?
     ) {
-        LogUtils.d("onCreateOutgoingConnectionFailed")
+        Timber.d("onCreateOutgoingConnectionFailed")
         super.onCreateOutgoingConnectionFailed(connectionManagerPhoneAccount, request)
     }
 
@@ -57,7 +57,7 @@ class MyConnectionService : ConnectionService(){
         fromPhoneAccountHandle: PhoneAccountHandle?,
         request: ConnectionRequest?
     ): Connection {
-        LogUtils.d("onCreateOutgoingHandoverConnection")
+        Timber.d("onCreateOutgoingHandoverConnection")
         return super.onCreateOutgoingHandoverConnection(fromPhoneAccountHandle, request)
     }
 
